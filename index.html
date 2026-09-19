@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P.R.O.M.O.D — Painel de Rastreamento</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="css/main.css">
+
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ===================== SIDEBAR (desktop) ===================== -->
+  <aside class="sidebar d-none d-lg-block">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-text">P.R.O.M.O.D</div>
+      </div>
+    </div>
+    <nav>
+      <div class="nav-link-item active" data-target="dashboard"><i class="bi bi-grid-1x2-fill"></i> Dashboard</div>
+      <div class="nav-link-item" data-target="inventario"><i class="bi bi-box-seam-fill"></i> Inventário</div>
+      <div class="nav-link-item" data-target="sensores"><i class="bi bi-cpu-fill"></i> Sensores</div>
+      <div class="nav-link-item" data-target="rastreabilidade"><i class="bi bi-diagram-3-fill"></i> Rastreabilidade</div>
+      <div class="nav-link-item" data-target="relatorios"><i class="bi bi-file-earmark-text-fill"></i> Relatórios</div>
+      <div class="nav-link-item" data-target="configuracoes"><i class="bi bi-gear-fill"></i> Configurações</div>
+    </nav>
+  </aside>
+
+  <div class="main-col">
+    <!-- ===================== TOPBAR ===================== -->
+    <header class="topbar">
+      <div class="search-wrap">
+        <i class="bi bi-search"></i>
+        <input class="search-input" id="topSearch" type="text" placeholder="Buscar dormentes ou sensores...">
+      </div>
+      <div class="topbar-right">
+        <button class="bell-btn"><i class="bi bi-bell-fill"></i><span class="bell-dot"></span></button>
+        <div class="user-chip">
+          <div class="avatar">ET</div>
+          <div class="user-meta">
+            <div class="user-name">Erik Takeuti</div>
+            <div class="user-role">Operador Principal</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content-area">
+
+      <!-- ===================== DASHBOARD ===================== -->
+      <section class="content-section active" id="sec-dashboard">
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Total de Dormentes</span><div class="kpi-icon"><i class="bi bi-layers-fill"></i></div></div>
+              <div class="kpi-value">12.847</div>
+              <div class="kpi-foot"><span class="dot"></span> Capacidade: 85.6%</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Sensores Ativos</span><div class="kpi-icon"><i class="bi bi-gear-fill"></i></div></div>
+              <div class="kpi-value">342/350</div>
+              <div class="kpi-foot ok"><span class="dot"></span> 97.7% operacional</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Alertas Hoje</span><div class="kpi-icon"><i class="bi bi-exclamation-triangle-fill"></i></div></div>
+              <div class="kpi-value">7</div>
+              <div class="kpi-foot bad"><span class="dot"></span> 3 urgentes pendentes</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Taxa de Movimentação</span><div class="kpi-icon"><i class="bi bi-activity"></i></div></div>
+              <div class="kpi-value">94.2%</div>
+              <div class="kpi-foot ok"><span class="dot"></span> +4.2% vs ontem</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-xl-8">
+            <div class="card-p h-100">
+              <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                  <div class="card-title">Movimentação de Dormentes</div>
+                  <div class="card-subtitle">Últimos 7 dias (Entradas vs Saídas)</div>
+                </div>
+                <div class="d-flex gap-3 small" style="color:var(--text-mid)">
+                  <span><span class="dot" style="background:var(--accent-light)"></span> Entrada</span>
+                  <span><span class="dot" style="background:var(--warn)"></span> Saída</span>
+                </div>
+              </div>
+              <div class="chart-wrap"><canvas id="chartMovimentacao"></canvas></div>
+            </div>
+          </div>
+          <div class="col-12 col-xl-4">
+            <div class="card-p h-100">
+              <div class="card-title">Planta Física &amp; Zonas Ativas</div>
+              <div class="card-subtitle">Layout em tempo real</div>
+              <div class="row g-2">
+                <div class="col-6"><div class="zone-box critical"><div class="zone-name">ZONA A</div><div class="zone-sub"><span class="dot bad-dot" style="background:var(--bad)"></span> Crítico</div></div></div>
+                <div class="col-6"><div class="zone-box"><div class="zone-name">ZONA B</div><div class="zone-sub"><span class="dot" style="background:var(--ok)"></span> Estável</div></div></div>
+                <div class="col-6"><div class="zone-box"><div class="zone-name">ZONA C</div><div class="zone-sub"><span class="dot" style="background:var(--warn)"></span> Inspeção</div></div></div>
+                <div class="col-6"><div class="zone-box"><div class="zone-name">ZONA D</div><div class="zone-sub"><span class="dot" style="background:var(--ok)"></span> Expedição</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-xl-4">
+            <div class="card-p h-100">
+              <div class="card-title">Status dos Sensores IoT</div>
+              <div class="card-subtitle">Matriz de rastreabilidade</div>
+              <div id="sensorMatrix"></div>
+            </div>
+          </div>
+          <div class="col-12 col-xl-8">
+            <div class="card-p h-100">
+              <div class="d-flex justify-content-between align-items-start mb-1">
+                <div>
+                  <div class="card-title">Últimas Movimentações</div>
+                  <div class="card-subtitle mb-0">Inspeção e transferência em tempo real</div>
+                </div>
+                <button class="btn-ghost">Ver Todas</button>
+              </div>
+              <div class="table-responsive d-none d-md-block">
+                <table class="table-promod">
+                  <thead><tr><th>ID Dormente</th><th>Origem</th><th>Destino</th><th>Hora</th><th>Status</th></tr></thead>
+                  <tbody id="movTableBody"></tbody>
+                </table>
+              </div>
+              <div class="d-md-none" id="movCardsBody"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== INVENTÁRIO ===================== -->
+      <section class="content-section" id="sec-inventario">
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Total em Estoque</span><div class="kpi-icon"><i class="bi bi-layers-fill"></i></div></div>
+              <div class="kpi-value">12.847</div>
+              <div class="kpi-foot"><span class="dot"></span> 85.6% da capacidade do pátio</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Novos Este Mês</span><div class="kpi-icon"><i class="bi bi-activity"></i></div></div>
+              <div class="kpi-value">1.450</div>
+              <div class="kpi-foot ok"><span class="dot"></span> +12.4% vs mês anterior</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Em Manutenção</span><div class="kpi-icon"><i class="bi bi-exclamation-triangle-fill"></i></div></div>
+              <div class="kpi-value">184</div>
+              <div class="kpi-foot warn"><span class="dot"></span> 1.4% de taxa de reparo</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Taxa de Descarte</span><div class="kpi-icon"><i class="bi bi-activity"></i></div></div>
+              <div class="kpi-value">2.1%</div>
+              <div class="kpi-foot bad"><span class="dot"></span> 35 unidades esta semana</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <span class="filter-label">Filtros:</span>
+          <div class="filter-group"><span>Tipo de Madeira:</span><select class="select-ghost"><option>Todos</option><option>Eucalipto</option><option>Ipê</option><option>Pinus</option><option>Jatobá</option></select></div>
+          <div class="filter-group"><span>Estado:</span><select class="select-ghost"><option>Todos</option><option>Novo</option><option>Em Uso</option><option>Manutenção</option><option>Descartado</option></select></div>
+          <div class="filter-group"><span>Zona Atual:</span><select class="select-ghost"><option>Todas</option><option>Zona A</option><option>Zona B</option><option>Zona C</option><option>Zona D</option></select></div>
+          <button class="btn-promod ms-lg-auto"><i class="bi bi-download me-1"></i> Exportar Planilha</button>
+        </div>
+
+        <div class="card-p">
+          <div class="card-title mb-3">Estoque Geral de Dormentes</div>
+          <div class="table-responsive d-none d-md-block">
+            <table class="table-promod">
+              <thead><tr><th>ID Dormente</th><th>Tipo de Madeira</th><th>Peso (kg)</th><th>Dimensões (cm)</th><th>Estado</th><th>Zona Atual</th><th>Data de Entrada</th></tr></thead>
+              <tbody id="invTableBody"></tbody>
+            </table>
+          </div>
+          <div class="d-md-none" id="invCardsBody"></div>
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-2" style="border-top:1px solid var(--border-hair)">
+            <span class="small" style="color:var(--text-lo)">Mostrando 1–6 de 12.847 dormentes</span>
+            <div class="d-flex gap-2 align-items-center">
+              <button class="btn-ghost">Anterior</button>
+              <button class="btn-promod" style="padding:8px 14px">1</button>
+              <button class="btn-ghost">2</button>
+              <button class="btn-ghost">3</button>
+              <button class="btn-ghost">Próximo</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== SENSORES ===================== -->
+      <section class="content-section" id="sec-sensores">
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Total Sensores</span><div class="kpi-icon"><i class="bi bi-cpu-fill"></i></div></div>
+              <div class="kpi-value">350</div>
+              <div class="kpi-foot"><span class="dot"></span> Dispositivos instalados</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Sensores Ativos</span><div class="kpi-icon"><i class="bi bi-activity"></i></div></div>
+              <div class="kpi-value">342</div>
+              <div class="kpi-foot ok"><span class="dot"></span> 97.7% operacional</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Inativos</span><div class="kpi-icon"><i class="bi bi-exclamation-triangle-fill"></i></div></div>
+              <div class="kpi-value">5</div>
+              <div class="kpi-foot bad"><span class="dot"></span> Aguardando conexão</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="kpi-card">
+              <div class="kpi-top"><span class="kpi-label">Em Manutenção</span><div class="kpi-icon"><i class="bi bi-layers-fill"></i></div></div>
+              <div class="kpi-value">3</div>
+              <div class="kpi-foot warn"><span class="dot"></span> Calibração necessária</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-bar">
+          <span class="filter-label">Filtrar Sensores:</span>
+          <div class="filter-group"><span>Zona:</span><select class="select-ghost"><option>Todas</option><option>Zona A</option><option>Zona B</option><option>Zona C</option><option>Zona D</option></select></div>
+          <div class="filter-group"><span>Status:</span><select class="select-ghost"><option>Ativo</option><option>Inativo</option><option>Manutenção</option><option>Todos</option></select></div>
+          <div class="filter-group"><span>Métrica:</span><select class="select-ghost"><option>Todos</option><option>Temperatura</option><option>Umidade</option><option>Vibração</option><option>RFID</option></select></div>
+          <button class="btn-promod ms-lg-auto"><i class="bi bi-plus-lg me-1"></i> Adicionar Sensor</button>
+        </div>
+
+        <div class="row g-3" id="sensorCardsGrid"></div>
+      </section>
+
+      <!-- ===================== RASTREABILIDADE ===================== -->
+      <section class="content-section" id="sec-rastreabilidade">
+        <div class="row g-3">
+          <div class="col-12 col-xl-8">
+            <div class="card-p mb-3">
+              <div class="card-title">Linha do Tempo de Produção</div>
+              <div class="card-subtitle">Rastreamento sequencial em tempo real para <span class="mono" style="color:var(--accent-light)">DMT-77402</span></div>
+
+              <!-- desktop stepper -->
+              <div class="stepper mt-2">
+                <div class="step"><div class="step-circle">01</div><div class="step-name">Recepção</div><div class="step-time">08:30</div></div>
+                <div class="step-connector"></div>
+                <div class="step"><div class="step-circle">02</div><div class="step-name">Inspeção</div><div class="step-time">10:15</div></div>
+                <div class="step-connector"></div>
+                <div class="step"><div class="step-circle">03</div><div class="step-name">Secagem</div><div class="step-time">11:00</div></div>
+                <div class="step-connector dashed"></div>
+                <div class="step pending"><div class="step-circle">04</div><div class="step-name">Expedição</div><div class="step-time">Pendente</div></div>
+              </div>
+
+              <!-- mobile stepper -->
+              <div class="stepper-mobile" style="display:none;">
+                <div class="m-step"><div class="m-line"></div><div class="m-dot"><i class="bi bi-check-lg"></i></div><div><div class="m-step-title">Recepção</div><div class="m-step-time">08:30</div></div></div>
+                <div class="m-step"><div class="m-line"></div><div class="m-dot"><i class="bi bi-check-lg"></i></div><div><div class="m-step-title">Inspeção</div><div class="m-step-time">10:15</div></div></div>
+                <div class="m-step"><div class="m-line"></div><div class="m-dot"><i class="bi bi-check-lg"></i></div><div><div class="m-step-title">Secagem</div><div class="m-step-time">11:00</div></div></div>
+                <div class="m-step pending"><div class="m-dot">04</div><div><div class="m-step-title">Expedição</div><div class="m-step-time" style="color:var(--text-lo)">Pendente</div></div></div>
+              </div>
+            </div>
+
+            <div class="card-p">
+              <div class="card-title mb-2">Log de Transições</div>
+              <div class="log-item">
+                <div class="log-time">14:32:05</div>
+                <div class="flex-grow-1">
+                  <div class="log-title">Movimentado para Secagem</div>
+                  <div class="log-desc">Transferência autorizada automática por sensor de lote</div>
+                </div>
+                <div class="log-actor">Sistema</div>
+              </div>
+              <div class="log-item">
+                <div class="log-time">11:00:12</div>
+                <div class="flex-grow-1">
+                  <div class="log-title">Aprovado em Inspeção de Qualidade</div>
+                  <div class="log-desc">Sem fissuras detectadas, umidade de 12.4%</div>
+                </div>
+                <div class="log-actor">Erik Takeuti</div>
+              </div>
+              <div class="log-item">
+                <div class="log-time">08:30:00</div>
+                <div class="flex-grow-1">
+                  <div class="log-title">Entrada Registrada no Sistema</div>
+                  <div class="log-desc">Lote L-481 · Origem: Eucaliptal Sul</div>
+                </div>
+                <div class="log-actor">Portão Sul</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-xl-4">
+            <div class="card-p">
+              <div class="card-title mb-2">Especificações Técnicas</div>
+              <div class="spec-row"><span class="spec-k">ID Rastreamento</span><span class="spec-v" style="color:var(--accent-light)">DMT-77402</span></div>
+              <div class="spec-row"><span class="spec-k">Lote de Madeira</span><span class="spec-v">Eucalipto Premium</span></div>
+              <div class="spec-row"><span class="spec-k">Peso</span><span class="spec-v">82.5 kg</span></div>
+              <div class="spec-row"><span class="spec-k">Sensor Acoplado</span><span class="spec-v" style="color:var(--accent-light)">SEN-TEMP-001</span></div>
+              <div class="spec-row"><span class="spec-k">Tempo de Secagem</span><span class="spec-v">14h 32min</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== RELATÓRIOS ===================== -->
+      <section class="content-section" id="sec-relatorios">
+        <div class="filter-bar">
+          <span class="filter-label">Período:</span>
+          <div class="filter-group"><span>Filtro de Data:</span><select class="select-ghost"><option>Últimos 30 dias</option><option>Últimos 7 dias</option><option>Este ano</option></select></div>
+          <button class="btn-promod ms-lg-auto"><i class="bi bi-file-earmark-plus me-1"></i> Gerar Novo Relatório</button>
+        </div>
+
+        <div class="card-p mb-3">
+          <div class="card-title">Tendência Mensal de Movimentação</div>
+          <div class="card-subtitle">Volume de entradas de dormentes processadas</div>
+          <div class="chart-wrap-sm"><canvas id="chartRelatorios"></canvas></div>
+        </div>
+
+        <div class="card-p">
+          <div class="card-title mb-3">Relatórios Prontos para Exportação</div>
+          <div class="table-responsive d-none d-md-block">
+            <table class="table-promod">
+              <thead><tr><th>Data de Geração</th><th>Tipo de Relatório</th><th>Gerado Por</th><th>Status</th><th>Ações</th></tr></thead>
+              <tbody id="relTableBody"></tbody>
+            </table>
+          </div>
+          <div class="d-md-none" id="relCardsBody"></div>
+        </div>
+      </section>
+
+      <!-- ===================== CONFIGURAÇÕES ===================== -->
+      <section class="content-section" id="sec-configuracoes">
+        <div class="row g-3">
+          <div class="col-12 col-lg-6">
+            <div class="card-p h-100">
+              <div class="card-title mb-3">Perfil do Usuário</div>
+              <div class="profile-row">
+                <div class="profile-avatar">ET</div>
+                <div>
+                  <div class="profile-name">Erik Takeuti</div>
+                  <div class="profile-mail">erik.takeuti@promod.app.com</div>
+                  <div class="profile-id">ID Operador: #OP-8840</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="card-p h-100">
+              <div class="card-title mb-2">Alertas e Notificações</div>
+              <div class="settings-row"><span class="settings-k">Alertas de Falha Crítica de Sensor</span>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+              </div>
+              <div class="settings-row"><span class="settings-k">Resumo Diário por E-mail</span>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+              </div>
+              <div class="settings-row"><span class="settings-k">Notificações SMS de Descarte</span>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="card-p h-100">
+              <div class="card-title mb-2">Sistema</div>
+              <div class="settings-row"><span class="settings-k">Idioma do Dashboard</span><span class="settings-v">Português (BR)</span></div>
+              <div class="settings-row"><span class="settings-k">Fuso Horário</span><span class="settings-v">GMT-3 (São Paulo)</span></div>
+              <div class="settings-row"><span class="settings-k">Intervalo de Atualização</span><span class="settings-v">30 segundos</span></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="card-p h-100">
+              <div class="card-title mb-2">Calibração de Sensores</div>
+              <div class="settings-row"><span class="settings-k">Frequência de Calibração</span><span class="settings-v">A cada 90 dias</span></div>
+              <div class="settings-row"><span class="settings-k">Limite Crítico de Umidade</span><span class="settings-v warn">&gt; 18.5%</span></div>
+              <div class="settings-row"><span class="settings-k">Tolerância de Desvio Térmico</span><span class="settings-v">± 2.5 °C</span></div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="card-p h-100">
+              <div class="card-title mb-2">Segurança</div>
+              <div class="settings-row"><span class="settings-k">Autenticação em Duas Etapas (2FA)</span>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+              </div>
+              <div class="settings-row"><span class="settings-k">Alterar Senha do Operador</span><span class="settings-v link">Atualizar</span></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-6">
+            <div class="card-p h-100">
+              <div class="card-title mb-2">Sobre o Sistema</div>
+              <div class="settings-row"><span class="settings-k">Versão do Firmware</span><span class="settings-v">v4.8.1-industrial</span></div>
+              <div class="settings-row"><span class="settings-k">Última Atualização</span><span class="settings-v">20/01/2026 · 03:00</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===================== BOTTOM NAV (mobile) ===================== -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bn-item active" data-target="dashboard"><i class="bi bi-grid-1x2-fill"></i>Painel</div>
+    <div class="bn-item" data-target="inventario"><i class="bi bi-box-seam-fill"></i>Inventário</div>
+    <div class="bn-item" data-target="sensores"><i class="bi bi-cpu-fill"></i>Sensores</div>
+    <div class="bn-item" data-target="rastreabilidade"><i class="bi bi-diagram-3-fill"></i>Rastrear</div>
+    <div class="bn-item" data-target="relatorios"><i class="bi bi-file-earmark-text-fill"></i>Relatórios</div>
+    <div class="bn-item" data-target="configuracoes"><i class="bi bi-gear-fill"></i>Config.</div>
+  </div>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+/* ---------------- Navigation ---------------- */
+const titles = {
+  dashboard: { title:"Dashboard", search:"Buscar dormentes ou sensores..." },
+  inventario: { title:"Inventário", search:"Buscar dormentes..." },
+  sensores: { title:"Sensores", search:"Buscar sensores..." },
+  rastreabilidade: { title:"Rastreabilidade", search:"Buscar dormente por ID (ex: DMT-77402)..." },
+  relatorios: { title:"Relatórios", search:"Buscar relatórios gerados..." },
+  configuracoes: { title:"Configurações", search:"Buscar configurações..." }
+};
+
+function goTo(target){
+  document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + target).classList.add('active');
+
+  document.querySelectorAll('.nav-link-item').forEach(el => el.classList.toggle('active', el.dataset.target === target));
+  document.querySelectorAll('.bn-item').forEach(el => el.classList.toggle('active', el.dataset.target === target));
+
+  const cfg = titles[target];
+  document.getElementById('topSearch').placeholder = cfg.search;
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.querySelectorAll('.nav-link-item, .bn-item').forEach(el => {
+  el.addEventListener('click', () => goTo(el.dataset.target));
+});
+
+/* ---------------- Data ---------------- */
+const movimentacoes = [
+  { id:"DMT-77402", origem:"Estocagem Central", destino:"Pátio de Carga A", hora:"14:32:05", status:"Concluído" },
+  { id:"DMT-77403", origem:"Zona de Triagem", destino:"Linha de Distribuição 2", hora:"14:28:11", status:"Em Trânsito" },
+  { id:"DMT-77404", origem:"Portão Norte", destino:"Estocagem Central", hora:"14:15:40", status:"Concluído" },
+  { id:"DMT-77405", origem:"Pátio de Carga A", destino:"Ramal de Saída III", hora:"13:58:22", status:"Pendente" },
+  { id:"DMT-77406", origem:"Linha de Distribuição 1", destino:"Zona de Descarte", hora:"13:42:00", status:"Concluído" },
+  { id:"DMT-77407", origem:"Estocagem Central", destino:"Pátio de Carga B", hora:"13:19:12", status:"Em Trânsito" },
+];
+
+const statusBadge = (status) => {
+  const map = {
+    "Concluído":"badge-ok", "Em Trânsito":"badge-neutral", "Pendente":"badge-warn",
+    "Novo":"badge-ok", "Em Uso":"badge-neutral", "Manutenção":"badge-warn", "Descartado":"badge-bad",
+    "Pronto":"badge-ok", "Processando":"badge-warn",
+    "Ativo":"badge-ok", "Inativo":"badge-bad"
+  };
+  return map[status] || "badge-neutral";
+};
+
+const movTableBody = document.getElementById('movTableBody');
+const movCardsBody = document.getElementById('movCardsBody');
+movimentacoes.forEach(m => {
+  movTableBody.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td class="cell-id">${m.id}</td>
+      <td>${m.origem}</td>
+      <td>${m.destino}</td>
+      <td class="mono">${m.hora}</td>
+      <td><span class="badge-pill ${statusBadge(m.status)}">${m.status}</span></td>
+    </tr>`);
+  movCardsBody.insertAdjacentHTML('beforeend', `
+    <div class="py-2" style="border-bottom:1px solid var(--border-hair)">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <span class="cell-id">${m.id}</span>
+        <span class="badge-pill ${statusBadge(m.status)}">${m.status}</span>
+      </div>
+      <div class="small" style="color:var(--text-mid)">${m.origem} → ${m.destino}</div>
+      <div class="small mono" style="color:var(--text-lo)">${m.hora}</div>
+    </div>`);
+});
+
+/* Sensor matrix (dashboard) */
+const zonas = [
+  { nome:"Zona A - Recepção", count:"10/12 ON", on:10, total:12 },
+  { nome:"Zona B - Inspeção", count:"9/10 ON", on:9, total:10 },
+  { nome:"Zona C - Secagem", count:"7/8 ON", on:7, total:8 },
+  { nome:"Zona D - Expedição", count:"11/12 ON", on:11, total:12 },
+];
+const sensorMatrix = document.getElementById('sensorMatrix');
+zonas.forEach(z => {
+  let dots = "";
+  for(let i=0;i<z.total;i++){ dots += `<div class="d ${i < z.on ? '' : 'off'}"></div>`; }
+  sensorMatrix.insertAdjacentHTML('beforeend', `
+    <div class="sensor-row">
+      <div class="sensor-row-top"><span class="sensor-row-name">${z.nome}</span><span class="sensor-row-count">${z.count}</span></div>
+      <div class="dot-matrix">${dots}</div>
+    </div>`);
+});
+
+/* Inventário */
+const inventario = [
+  { id:"DMT-77402", tipo:"Eucalipto", peso:"82.5", dim:"230 x 24 x 17", estado:"Em Uso", zona:"Zona B - Inspeção", data:"12/01/2026" },
+  { id:"DMT-77403", tipo:"Ipê", peso:"95.0", dim:"240 x 24 x 17", estado:"Novo", zona:"Zona A - Recepção", data:"15/01/2026" },
+  { id:"DMT-77404", tipo:"Pinus", peso:"71.2", dim:"230 x 24 x 17", estado:"Manutenção", zona:"Zona C - Secagem", data:"10/01/2026" },
+  { id:"DMT-77405", tipo:"Jatobá", peso:"91.8", dim:"240 x 24 x 17", estado:"Em Uso", zona:"Zona D - Expedição", data:"05/01/2026" },
+  { id:"DMT-77406", tipo:"Eucalipto", peso:"83.0", dim:"230 x 24 x 17", estado:"Descartado", zona:"Zona de Descarte", data:"02/01/2026" },
+  { id:"DMT-77407", tipo:"Ipê", peso:"94.6", dim:"240 x 24 x 17", estado:"Novo", zona:"Zona A - Recepção", data:"18/01/2026" },
+];
+const invTableBody = document.getElementById('invTableBody');
+const invCardsBody = document.getElementById('invCardsBody');
+inventario.forEach(r => {
+  invTableBody.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td class="cell-id">${r.id}</td>
+      <td class="cell-strong">${r.tipo}</td>
+      <td class="mono">${r.peso}</td>
+      <td class="mono">${r.dim}</td>
+      <td><span class="badge-pill ${statusBadge(r.estado)}">${r.estado}</span></td>
+      <td>${r.zona}</td>
+      <td class="mono">${r.data}</td>
+    </tr>`);
+  invCardsBody.insertAdjacentHTML('beforeend', `
+    <div class="py-2" style="border-bottom:1px solid var(--border-hair)">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <span class="cell-id">${r.id}</span>
+        <span class="badge-pill ${statusBadge(r.estado)}">${r.estado}</span>
+      </div>
+      <div class="small" style="color:var(--text-hi)">${r.tipo} · ${r.peso}kg · ${r.dim} cm</div>
+      <div class="small" style="color:var(--text-mid)">${r.zona} — <span class="mono">${r.data}</span></div>
+    </div>`);
+});
+
+/* Sensores */
+const sensores = [
+  { id:"SEN-TEMP-001", tipo:"Temperatura", icon:"bi-thermometer-half", status:"Ativo", zona:"Zona A - Recepção", leitura:"14:32:01", bateria:98 },
+  { id:"SEN-UMID-012", tipo:"Umidade", icon:"bi-droplet-fill", status:"Ativo", zona:"Zona B - Inspeção", leitura:"14:31:55", bateria:92 },
+  { id:"SEN-VIBR-045", tipo:"Vibração", icon:"bi-activity", status:"Manutenção", zona:"Zona C - Secagem", leitura:"14:30:10", bateria:14 },
+  { id:"SEN-RFID-090", tipo:"RFID", icon:"bi-broadcast", status:"Ativo", zona:"Zona D - Expedição", leitura:"14:32:05", bateria:100 },
+  { id:"SEN-TEMP-023", tipo:"Temperatura", icon:"bi-thermometer-half", status:"Inativo", zona:"Zona B - Inspeção", leitura:"Ontem, 18:40", bateria:0 },
+  { id:"SEN-VIBR-009", tipo:"Vibração", icon:"bi-activity", status:"Ativo", zona:"Zona A - Recepção", leitura:"14:31:40", bateria:85 },
+];
+const sensorCardsGrid = document.getElementById('sensorCardsGrid');
+sensores.forEach(s => {
+  const battColor = s.bateria < 20 ? 'var(--bad)' : (s.bateria < 50 ? 'var(--warn)' : 'var(--accent-light)');
+  sensorCardsGrid.insertAdjacentHTML('beforeend', `
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="sensor-card">
+        <div class="sensor-card-top">
+          <div>
+            <div class="sensor-card-id">${s.id}</div>
+            <div class="small" style="color:var(--text-lo)"><i class="bi ${s.icon} me-1"></i>${s.tipo}</div>
+          </div>
+          <span class="badge-pill ${statusBadge(s.status)}">${s.status}</span>
+        </div>
+        <div class="sensor-kv"><span class="k">Localização</span><span class="v">${s.zona}</span></div>
+        <div class="sensor-kv"><span class="k">Última Leitura</span><span class="v mono">${s.leitura}</span></div>
+        <div class="sensor-kv"><span class="k">Bateria</span><span class="v mono" style="color:${battColor}">${s.bateria}%</span></div>
+      </div>
+    </div>`);
+});
+
+/* Relatórios */
+const relatorios = [
+  { data:"24/01/2026", tipo:"Movimentação Mensal - Janeiro", por:"Erik Takeuti", status:"Pronto" },
+  { data:"15/01/2026", tipo:"Eficiência Operacional de Zonas", por:"Sistema (Auto)", status:"Pronto" },
+  { data:"10/01/2026", tipo:"Mapeamento Preventivo de Sensores", por:"Erik Takeuti", status:"Processando" },
+  { data:"01/01/2026", tipo:"Análise de Descarte Anual 2025", por:"Diretoria", status:"Pronto" },
+];
+const relTableBody = document.getElementById('relTableBody');
+const relCardsBody = document.getElementById('relCardsBody');
+relatorios.forEach(r => {
+  relTableBody.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td class="mono">${r.data}</td>
+      <td class="cell-strong">${r.tipo}</td>
+      <td>${r.por}</td>
+      <td><span class="badge-pill ${statusBadge(r.status)}">${r.status}</span></td>
+      <td><button class="btn-icon-sm"><i class="bi bi-download"></i></button></td>
+    </tr>`);
+  relCardsBody.insertAdjacentHTML('beforeend', `
+    <div class="py-2 d-flex justify-content-between align-items-start" style="border-bottom:1px solid var(--border-hair)">
+      <div>
+        <div class="cell-strong" style="color:var(--text-hi)">${r.tipo}</div>
+        <div class="small" style="color:var(--text-mid)">${r.por} · <span class="mono">${r.data}</span></div>
+        <span class="badge-pill ${statusBadge(r.status)} mt-1 d-inline-block">${r.status}</span>
+      </div>
+      <button class="btn-icon-sm flex-shrink-0"><i class="bi bi-download"></i></button>
+    </div>`);
+});
+
+/* ---------------- Charts ---------------- */
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.color = "#8a7666";
+
+const gridColor = "rgba(233,196,150,0.07)";
+
+new Chart(document.getElementById('chartMovimentacao'), {
+  type: 'line',
+  data: {
+    labels: ["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"],
+    datasets: [
+      {
+        label:"Entrada",
+        data:[45,110,95,130,90,150,190],
+        borderColor:"#e2a978",
+        backgroundColor:"rgba(226,169,120,0.08)",
+        tension:0.35, fill:true, pointRadius:3, pointBackgroundColor:"#e2a978", borderWidth:2
+      },
+      {
+        label:"Saída",
+        data:[70,120,115,150,105,100,140],
+        borderColor:"#d99a3f",
+        borderDash:[5,4],
+        tension:0.35, fill:false, pointRadius:3, pointBackgroundColor:"#d99a3f", borderWidth:2
+      }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ display:false } },
+    scales:{
+      x:{ grid:{ display:false }, ticks:{ color:"#8a7666", font:{size:11} } },
+      y:{ grid:{ color:gridColor }, ticks:{ color:"#8a7666", font:{size:11} }, min:0 }
+    }
+  }
+});
+
+new Chart(document.getElementById('chartRelatorios'), {
+  type:'bar',
+  data:{
+    labels:["Ago","Set","Out","Nov","Dez","Jan"],
+    datasets:[{
+      label:"Entradas",
+      data:[420,520,610,560,780,830],
+      backgroundColor:"#c98a55",
+      borderRadius:6,
+      maxBarThickness:38
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ display:false } },
+    scales:{
+      x:{ grid:{ display:false }, ticks:{ color:"#8a7666", font:{size:11} } },
+      y:{ grid:{ color:gridColor }, ticks:{ color:"#8a7666", font:{size:11} }, min:0 }
+    }
+  }
+});
+</script>
+</body>
+</html>
